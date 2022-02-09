@@ -2,8 +2,7 @@ const moment = require("moment");
 var Promise = require("bluebird");
 var ParallelRequest = Promise.promisifyAll(require('parallel-http-request'));
 var request = new ParallelRequest({ response: "simple" });
-const autocannon = require('autocannon')
-var options = {};
+var options = {}, startTime = [];
 let lastTime = 0, currTime = 0;
 let timer = setInterval(() => {
     currTime += 10;
@@ -66,30 +65,38 @@ switch (type) {
 const sendRequests = async () => {
     try {
         let reqFactory = require(`./requests/${reqInfo.file}`)[reqInfo.func];
-        let pool = [], result, duration = options.numOfBatches * options.reqPerBatch / 1000;
-        do {
-            console.log('[Creating requests]');
-            for (let i = 0; i < 100; i++) {
-                pool.push(reqFactory());
-                await sleep(10);
+        let pool = [], responses = 0, totalFailed = 0, requestCount = 0;
+        if(options.type === "onetime") {
+            requestCount = options.numOfBatches * options.reqPerBatch;
+            for(let i = 0; i < options.numOfBatches; i++) {
+                //Create batch
+                for(let j = 0; j < options.reqPerBatch; j++) {
+                    request.add(reqFactory());
+                    sleep(10);
+                }
+                //Send batch to endpoint
+                startTime.push(new Date());
+                request.send(async (response) => {
+                    let filter = response.filter(r => r.status !== 200);
+                    console.log("Failed requests", filter.length);
+                    responses++;
+                    console.log("Response Received");
+                    console.log(`[${responses}/${options.numOfBatches}] Dropped req count ${filter.length}`);
+                    totalFailed += filter.length;
+                    console.log(`Total Failed: ${totalFailed}`);
+                    if (responses == requestCount) {
+                        console.log(`Total: ${(options.reqPerBatch * options.numOfBatches)}`);
+                        console.log(`Passed: ${(options.reqPerBatch * options.numOfBatches) - totalFailed}`);
+                    }
+                });
+                await sleep(250);
+                request = new ParallelRequest({ response: "simple" });
             }
-            console.log('[Done with request pool]');
-            console.log('[Dispatching request pool]', options);
-            result = await autocannon({
-                url: pool[0].url,
-                requests: pool,
-                connections: options.numOfBatches || 20, //default
-                pipelining: options.reqPerBatch || 1, // default
-                duration: duration // default
-            })
-            console.log('[Printing Output]');
-            console.log(result.statusCodeStats)
-            console.table(result.latency);
-            options.numOfBatches += 5;
-            options.reqPerBatch += 5;
-            duration = options.numOfBatches * options.reqPerBatch / 1000;
-        } while (result ? result.statusCodeStats ? Object.keys(result.statusCodeStats).length === 1 : true : true)
-        process.exit(1);
+        } else if(options.type === "incr") {
+
+        } else {
+
+        }
     } catch (ex) {
         console.error(ex);
         process.exit(1);
