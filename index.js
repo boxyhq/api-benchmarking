@@ -88,7 +88,7 @@ const sendRequests = async () => {
             options.numOfBatches += 5;
             options.reqPerBatch += 5;
             duration = options.numOfBatches * options.reqPerBatch / 1000;
-        } while (result ? result.statusCodeStats ? Object.keys(result.statusCodeStats).length === 1 : true : true)
+        } while (result ? result.statusCodeStats ? Object.keys(result.statusCodeStats).length === 1 && Object.keys(result.statusCodeStats).indexOf('200') !== -1 : true : true)
         process.exit(1);
     } catch (ex) {
         console.error(ex);
