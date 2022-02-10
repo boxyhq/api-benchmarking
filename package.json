@@ -4,7 +4,7 @@
   "description": "API benchmarking framework for internal products",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "k6 run --vus 220 --duration 350s k6.js"
   },
   "repository": {
     "type": "git",
