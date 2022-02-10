@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/boxyhq/api-benchmarking#readme",
   "dependencies": {
-    "autocannon": "^7.6.0",
     "bluebird": "^3.7.2",
     "moment": "^2.29.1",
     "parallel-http-request": "^1.1.3",
