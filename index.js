@@ -72,7 +72,7 @@ const sendRequests = async () => {
                 //Create batch
                 for(let j = 0; j < options.reqPerBatch; j++) {
                     request.add(reqFactory());
-                    sleep(10);
+                    // sleep(1);
                 }
                 //Send batch to endpoint
                 startTime.push(new Date());
@@ -84,9 +84,10 @@ const sendRequests = async () => {
                     console.log(`[${responses}/${options.numOfBatches}] Dropped req count ${filter.length}`);
                     totalFailed += filter.length;
                     console.log(`Total Failed: ${totalFailed}`);
-                    if (responses == requestCount) {
+                    if (responses == options.numOfBatches) {
                         console.log(`Total: ${(options.reqPerBatch * options.numOfBatches)}`);
                         console.log(`Passed: ${(options.reqPerBatch * options.numOfBatches) - totalFailed}`);
+                        process.exit(1);
                     }
                 });
                 await sleep(250);
