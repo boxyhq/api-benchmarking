@@ -72,7 +72,7 @@ const sendRequests = async () => {
                 //Create batch
                 for(let j = 0; j < options.reqPerBatch; j++) {
                     request.add(reqFactory());
-                    // sleep(1);
+                    sleep(1);
                 }
                 //Send batch to endpoint
                 startTime.push(new Date());
