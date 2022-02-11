@@ -1,7 +1,7 @@
 const ingest = () => {
     var options = {
         'method': 'POST',
-        'url': 'http://127.0.0.1:9880/sample.test',
+        'url': 'http://127.0.0.1:3000',
         'headers': {
             'Content-Type': 'application/json'
         },
