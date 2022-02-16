@@ -3,10 +3,13 @@ var Promise = require("bluebird");
 var ParallelRequest = Promise.promisifyAll(require('parallel-http-request'));
 var request = new ParallelRequest({ response: "simple" });
 var options = {}, startTime = [];
-let lastTime = 0, currTime = 0;
-let timer = setInterval(() => {
-    currTime += 10;
-}, 10);
+let lastReqCount = 0, reqCount = 0, reqPerSec = 0;
+setInterval(() => {
+    let temp = reqCount;
+    reqPerSec = (reqCount - lastReqCount) / 5;
+    lastReqCount = temp;
+    console.log(`[Requests Per Second]: ${reqPerSec}`);
+}, 5000);
 const getTimeElasped = () => {
     let seconds = (currTime - lastTime) / 1000;
     lastTime = currTime;
@@ -64,18 +67,20 @@ switch (type) {
 
 const sendRequests = async () => {
     try {
+        let count = 1;
         let reqFactory = require(`./requests/${reqInfo.file}`)[reqInfo.func];
         let pool = [], responses = 0, totalFailed = 0, requestCount = 0;
-        if(options.type === "onetime") {
+        if (options.type === "onetime") {
             requestCount = options.numOfBatches * options.reqPerBatch;
-            for(let i = 0; i < options.numOfBatches; i++) {
+            for (let i = 0; i < options.numOfBatches; i++) {
                 //Create batch
-                for(let j = 0; j < options.reqPerBatch; j++) {
-                    request.add(reqFactory());
-                    sleep(1);
+                for (let j = 0; j < options.reqPerBatch; j++) {
+                    request.add(reqFactory(count++));
+                    //sleep(1);
                 }
                 //Send batch to endpoint
                 startTime.push(new Date());
+                reqCount += options.reqPerBatch;
                 request.send(async (response) => {
                     let filter = response.filter(r => r.status !== 200);
                     console.log("Failed requests", filter.length);
@@ -87,13 +92,14 @@ const sendRequests = async () => {
                     if (responses == options.numOfBatches) {
                         console.log(`Total: ${(options.reqPerBatch * options.numOfBatches)}`);
                         console.log(`Passed: ${(options.reqPerBatch * options.numOfBatches) - totalFailed}`);
+                        console.log(`% Failed: ${(totalFailed * 100) / (options.reqPerBatch * options.numOfBatches)}`);
                         process.exit(1);
                     }
                 });
-                await sleep(250);
+                await sleep(100);
                 request = new ParallelRequest({ response: "simple" });
             }
-        } else if(options.type === "incr") {
+        } else if (options.type === "incr") {
 
         } else {
 
