@@ -1,4 +1,5 @@
 const ingest = (id) => {
+    let tenentIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     let actors = ['Deepak', 'Vishal', 'Kiran', 'Utkarsh', 'Aswin', 'Sama'];
     let actorTypes = ['user', 'admin', 'dev'];
     let groups = ['dev', 'business'];
@@ -24,7 +25,8 @@ const ingest = (id) => {
             'Cookie': 'myapp_cookiename=Fe26.2*1*d09d95c492eeb91aa5543f444037adc79846a6670d884eb2a2ba2d61e9dbb46a*ZM4MZsljSqwFwklP1f-pIA*FaSjWToOWODoCIwtozK1qw*1644996112887*ebf30b49c6e785ce61a966806bef398a72151fb476ce25c4ceec37c98c90ec07*XJBzLGoLaDDCzHrWZgzCizdZW4QSGyiTpzSJ3pqteKE~2'
         },
         body: JSON.stringify({
-            "id": id,
+            "tenentId": getRandomValue(tenentIds),
+            "timestamp": randomDate(new Date(2022, 0, 1), new Date()),
             "actor": getRandomValue(actors),
             "actor_type": getRandomValue(actorTypes),
             "group": getRandomValue(groups),
@@ -46,6 +48,12 @@ const ingest = (id) => {
     };
     return options;
 }
+
+function randomDate(start, end) {
+    var dt = +new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+    return dt;
+}
+
 module.exports = {
     ingest: ingest
 }
