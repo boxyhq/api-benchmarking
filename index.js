@@ -4,12 +4,12 @@ var ParallelRequest = Promise.promisifyAll(require('parallel-http-request'));
 var request = new ParallelRequest({ response: "simple" });
 var options = {}, startTime = [];
 let lastReqCount = 0, reqCount = 0, reqPerSec = 0;
-setInterval(() => {
-    let temp = reqCount;
-    reqPerSec = (reqCount - lastReqCount) / 5;
-    lastReqCount = temp;
-    console.log(`[Requests Per Second]: ${reqPerSec}`);
-}, 5000);
+// setInterval(() => {
+//     let temp = reqCount;
+//     reqPerSec = (reqCount - lastReqCount) / 5;
+//     lastReqCount = temp;
+//     console.log(`[Requests Per Second]: ${reqPerSec}`);
+// }, 5000);
 const getTimeElasped = () => {
     let seconds = (currTime - lastTime) / 1000;
     lastTime = currTime;
@@ -69,7 +69,7 @@ const sendRequests = async () => {
     try {
         let count = 1;
         let reqFactory = require(`./requests/${reqInfo.file}`)[reqInfo.func];
-        let pool = [], responses = 0, totalFailed = 0, requestCount = 0;
+        let startTime = +new Date(), responses = 0, totalFailed = 0, requestCount = 0;
         if (options.type === "onetime") {
             requestCount = options.numOfBatches * options.reqPerBatch;
             for (let i = 0; i < options.numOfBatches; i++) {
@@ -79,11 +79,10 @@ const sendRequests = async () => {
                     //sleep(1);
                 }
                 //Send batch to endpoint
-                startTime.push(new Date());
                 reqCount += options.reqPerBatch;
                 request.send(async (response) => {
-                    let filter = response.filter(r => r.status !== 200);
-                    console.log("Failed requests", filter.length);
+                    let filter = response.filter(r => r.status !== 200 && r.status !== 201);
+                    console.log("Failed requests", filter.length, filter.map(r => r.status));
                     responses++;
                     console.log("Response Received");
                     console.log(`[${responses}/${options.numOfBatches}] Dropped req count ${filter.length}`);
@@ -93,6 +92,12 @@ const sendRequests = async () => {
                         console.log(`Total: ${(options.reqPerBatch * options.numOfBatches)}`);
                         console.log(`Passed: ${(options.reqPerBatch * options.numOfBatches) - totalFailed}`);
                         console.log(`% Failed: ${(totalFailed * 100) / (options.reqPerBatch * options.numOfBatches)}`);
+                        let diff = Math.floor((+new Date() - startTime) / 1000);
+                        console.log(`Request Per Second: ${((options.reqPerBatch * options.numOfBatches) - totalFailed) / diff}`);
+                        // var player = require('play-sound')(opts = {})
+                        // player.play('./foo.mp3', function (err) {
+                        //     if (err) throw err
+                        // })
                         process.exit(1);
                     }
                 });
@@ -112,14 +117,3 @@ const sendRequests = async () => {
 
 //Initiate the program
 sendRequests();
-
-
-function duration() {
-    return 20;
-}
-/*
- * first arg => req file/folder
- * type of test =>  one time(onetime), incremental(incr)
- *                  one time => 10 * 10 => 100
- *                  incremental => 10 => 10 + 5 => 50
-*/
