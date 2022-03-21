@@ -4,7 +4,7 @@ const ingest = () => {
     let actorTypes = ['user', 'admin', 'dev'];
     let groups = ['dev', 'business'];
     let whereType = ['ip', 'city'];
-    let wheres = ['127.0.0.1', '192.168.1.1', '0.0.0.0', '10.10.10.10', '10.20.30.40'];
+    let wheres = ['127.0.0.1', '192.168.1.1', '10.10.10.10', '10.20.30.40'];
     let targets = ['user.login', 'user.profile', 'dashboard.edit', 'dashboard.view', 'user.logout'];
     let targetIds = ['10', '20', '30', '40'];
     let actions = ['login', 'logout', 'view', 'scroll', 'click'];
@@ -52,7 +52,6 @@ const ingest = () => {
             "component": "string",
             "version": "string"
         })
-    
     };
     return options;
 }
