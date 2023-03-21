@@ -81,9 +81,6 @@ const ingest = () => {
       type: "dfgdfg-fdgdfg-dfgdfgdf-ertreer-bgthbt-dvfr-tbv-tyb-tyb-rb",
     },
     fields: {
-      sessionId: Math.random() * 1000000000000,
-      timeElasped: Math.random() * 1000000000000,
-      scale: Math.random() * 10000000,
       uuid: v4(),
       uuid1: v4(),
       uuid2: v4(),
@@ -135,9 +132,7 @@ const sameSize = () => {
       type: "text",
     },
     fields: {
-      sessionId: 8498798495498498498498489489498498489489498489494,
-      timeElasped: 9879849651984984984984651651984984984984984984984,
-      scale: 8498498154984561289456123984561239845613298465123984561298456123,
+      webhookUrl: "http://3e9b-116-75-27-24.ngrok.io",
       field1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       field2:
         "Pellentesque tincidunt erat vel mauris faucibus, vel facilisis ipsum interdum.",

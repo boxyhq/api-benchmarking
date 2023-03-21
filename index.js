@@ -1,35 +1,12 @@
-const moment = require("moment");
 var Promise = require("bluebird");
 var ParallelRequest = Promise.promisifyAll(require("parallel-http-request"));
 var request = new ParallelRequest({ response: "simple" });
-var options = {},
-  startTime = [];
-let lastReqCount = 0,
-  reqCount = 0,
-  reqPerSec = 0;
-// setInterval(() => {
-//     let temp = reqCount;
-//     reqPerSec = (reqCount - lastReqCount) / 5;
-//     lastReqCount = temp;
-//     console.log(`[Requests Per Second]: ${reqPerSec}`);
-// }, 5000);
-const getTimeElasped = () => {
-  let seconds = (currTime - lastTime) / 1000;
-  lastTime = currTime;
-  return seconds;
-};
+var options = {};
+let reqCount = 0;
 
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-let reqInfo = {},
-  printsPerReq,
-  wsId,
-  responses = 0,
-  totalFailed = 0;
+let reqInfo = {};
 
 //Options
 let reqFile = process.argv.length >= 3 ? process.argv[2] : "hermes.ingest";
@@ -73,6 +50,7 @@ const sendRequests = async () => {
     let count = 1;
     let reqFactory = require(`./requests/${reqInfo.file}`)[reqInfo.func];
     let startTime = +new Date(),
+      endTime,
       responses = 0,
       totalFailed = 0,
       requestCount = 0;
@@ -116,23 +94,21 @@ const sendRequests = async () => {
                 (options.reqPerBatch * options.numOfBatches)
               }`
             );
-            let diff = Math.floor((+new Date() - startTime) / 1000);
+            let diff = Math.floor((endTime - startTime) / 1000);
             console.log(
               `Request Per Second: ${
                 (options.reqPerBatch * options.numOfBatches - totalFailed) /
                 diff
               }`
             );
-            // var player = require('play-sound')(opts = {})
-            // player.play('./foo.mp3', function (err) {
-            //     if (err) throw err
-            // })
+
             process.exit(1);
           }
         });
-        await sleep(250);
+        await sleep(900);
         request = new ParallelRequest({ response: "simple" });
       }
+      endTime = +new Date();
     } else if (options.type === "fixed") {
       let totalRequests = 0,
         sleepTime = 250;
@@ -181,25 +157,6 @@ const sendRequests = async () => {
         await sleep(sleepTime);
         request = new ParallelRequest({ response: "simple" });
       } while (totalRequests < options.count + totalFailed);
-      // console.log(`Total: ${options.reqPerBatch * options.numOfBatches}`);
-      // console.log(
-      //   `Passed: ${options.reqPerBatch * options.numOfBatches - totalFailed}`
-      // );
-      // console.log(
-      //   `% Failed: ${
-      //     (totalFailed * 100) / (options.reqPerBatch * options.numOfBatches)
-      //   }`
-      // );
-      // let diff = Math.floor((+new Date() - startTime) / 1000);
-      // console.log(
-      //   `Request Per Second: ${
-      //     (options.reqPerBatch * options.numOfBatches - totalFailed) / diff
-      //   }`
-      // );
-      // var player = require('play-sound')(opts = {})
-      // player.play('./foo.mp3', function (err) {
-      //     if (err) throw err
-      // })
       process.exit(1);
     } else {
     }
