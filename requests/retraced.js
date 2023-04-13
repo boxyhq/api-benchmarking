@@ -132,7 +132,7 @@ const sameSize = () => {
       type: "text",
     },
     fields: {
-      webhookUrl: "http://3e9b-116-75-27-24.ngrok.io",
+      webhookUrl: "http://vector:9000",
       field1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       field2:
         "Pellentesque tincidunt erat vel mauris faucibus, vel facilisis ipsum interdum.",
@@ -158,7 +158,55 @@ const sameSize = () => {
   return options;
 };
 
+const TM = () => {
+  const body = {
+    action: "test.log.entry.to.make.sure.all.logs.are.of.same.size",
+    teamId: "boxyhq",
+    group: {
+      id: "boxyhq",
+      name: "BoxyHQ",
+    },
+    crud: "c",
+    created: new Date().toISOString(),
+    source_ip: "127.0.0.1",
+    actor: {
+      name: "I.am.an.actor.for.load.testing",
+      id: "1",
+    },
+    target: {
+      id: "21321-4654654-98798654-23132198",
+      name: "need to make sure that all logs are of same size",
+      type: "text",
+    },
+    fields: {
+      webhookUrl: "http://fc08-116-74-157-194.ngrok.io",
+      field1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      field2:
+        "Pellentesque tincidunt erat vel mauris faucibus, vel facilisis ipsum interdum.",
+      field3: "Quisque euismod elit a elit ultrices hendrerit.",
+      field4: "Morbi hendrerit est quis est lobortis scelerisque.",
+      field5: "Suspendisse volutpat sapien at tincidunt faucibus.",
+      field6: "Phasellus id velit vitae nunc faucibus facilisis.",
+      field7: "Donec ac felis eu sapien venenatis mattis.",
+      field8: "Nullam vehicula quam eget ante aliquet, in rutrum augue mattis.",
+      field9: "Nam varius purus sed nisl sagittis malesuada.",
+    },
+  };
+  const stringifiedBody = JSON.stringify(body);
+  var options = {
+    method: "POST",
+    url: "https://localhost:8443/auditlog/publisher/v1/project/dev/event",
+    headers: {
+      Authorization: "token=dev",
+      "Content-Type": "application/json",
+    },
+    body: stringifiedBody,
+  };
+  return options;
+};
+
 module.exports = {
   ingest,
   sameSize,
+  TM,
 };
