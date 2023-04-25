@@ -77,8 +77,8 @@ const random = () => {
     action: action,
     teamId: "boxyhq",
     group: {
-      id: getRandomValue(groups).id,
-      name: getRandomValue(groups).name,
+      id: getRandomValue(groups),
+      name: getRandomValue(groups),
     },
     crud: "c",
     created: new Date().toISOString(),
