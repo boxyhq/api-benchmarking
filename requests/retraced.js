@@ -75,7 +75,6 @@ const random = () => {
       sentenceUpperBound: 15, // Maximum sentence length
     }),
     action: action,
-    teamId: "boxyhq",
     group: {
       id: getRandomValue(groups),
       name: getRandomValue(groups),
