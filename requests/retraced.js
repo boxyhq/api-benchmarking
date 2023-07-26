@@ -12,12 +12,15 @@ const randomIntFromInterval = (min, max) => {
 };
 
 const random = () => {
-  let tenentIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  // let actors = ["Deepak", "Vishal", "Kiran", "Utkarsh", "Aswin", "Sama"];
-  let actorTypes = ["user", "admin", "dev"];
   let groups = ["dev", "business"];
-  let whereType = ["ip", "city"];
-  let wheres = ["127.0.0.1", "192.168.1.1", "10.10.10.10", "10.20.30.40"];
+  let wheres = [
+    "128.101.101.101",
+    "209.142.68.29",
+    "69.162.81.155",
+    "192.199.248.75",
+    "162.254.206.227",
+    "207.250.234.100",
+  ];
   let targets = [
     "user.login",
     "user.profile",
@@ -26,8 +29,6 @@ const random = () => {
     "user.logout",
   ];
   let targetIds = ["10", "20", "30", "40"];
-  // let actions = ["login", "logout", "view", "scroll", "click"];
-  let actionTypes = ["U", "V", "C", "S", "L"];
   let names = ["User", "Profile", "Dashboard", "Edit"];
   let descriptions = [
     "This is a event",
@@ -81,23 +82,24 @@ const random = () => {
     },
     crud: "c",
     created: new Date().toISOString(),
-    source_ip: "127.0.0.1",
+    source_ip: getRandomValue(wheres),
     actor: actor,
     target: {
-      id: "iwhdfiwhdfi-wdcwedc-ece-rc-erc-erc-er-ce-rc-erc-e-cer-ce-c",
-      name: "freferf-erf-erf-er-ver-ver-ver-ve-rv-erv-erv-erv-erv-er-v",
-      type: "dfgdfg-fdgdfg-dfgdfgdf-ertreer-bgthbt-dvfr-tbv-tyb-tyb-rb",
+      id: getRandomValue(targets),
+      name: getRandomValue(targetIds),
+      type: "UI",
     },
+    component: getRandomValue(names),
     fields: {
       uuid: v4(),
-      uuid1: v4(),
-      uuid2: v4(),
-      uuid3: v4(),
-      uuid4: v4(),
-      uuid5: v4(),
-      uuid6: v4(),
-      uuid7: v4(),
-      uuid8: v4(),
+      // uuid1: v4(),
+      // uuid2: v4(),
+      // uuid3: v4(),
+      // uuid4: v4(),
+      // uuid5: v4(),
+      // uuid6: v4(),
+      // uuid7: v4(),
+      // uuid8: v4(),
     },
   };
   const stringifiedBody = JSON.stringify(body);
