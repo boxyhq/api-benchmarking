@@ -3,10 +3,27 @@ var ParallelRequest = Promise.promisifyAll(require("parallel-http-request"));
 var request = new ParallelRequest({ response: "simple" });
 var options = {};
 let reqCount = 0;
+const readline = require("readline");
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-let reqInfo = {};
+let reqInfo = {},
+  pause = false;
+
+rl.input.on("keypress", function (chunk, key) {
+  if (key && key.ctrl && key.name === "p") {
+    console.log(!pause ? "Pausing" : "Resuming");
+    pause = !pause;
+  }
+});
+
+rl.input.setRawMode(true);
+rl.input.resume();
 
 //Options
 let reqFile = process.argv.length >= 3 ? process.argv[2] : "hermes.ingest";
@@ -57,10 +74,20 @@ const sendRequests = async () => {
     if (options.type === "onetime") {
       requestCount = options.numOfBatches * options.reqPerBatch;
       for (let i = 0; i < options.numOfBatches; i++) {
+        if (pause) {
+          i--;
+          await sleep(1000);
+          continue;
+        }
         //Create batch
         for (let j = 0; j < options.reqPerBatch; j++) {
           request.add(reqFactory(count++));
-          // sleep(1);
+          if (pause) {
+            j--;
+            await sleep(1000);
+            continue;
+          }
+          // await sleep(10);
         }
         //Send batch to endpoint
         reqCount += options.reqPerBatch;
@@ -82,6 +109,7 @@ const sendRequests = async () => {
           totalFailed += filter.length;
           console.log(`Total Failed: ${totalFailed}`);
           if (responses == options.numOfBatches) {
+            endTime = +new Date();
             console.log(`Total: ${options.reqPerBatch * options.numOfBatches}`);
             console.log(
               `Passed: ${
@@ -105,7 +133,7 @@ const sendRequests = async () => {
             process.exit(1);
           }
         });
-        await sleep(900);
+        await sleep(1000);
         request = new ParallelRequest({ response: "simple" });
       }
       endTime = +new Date();
