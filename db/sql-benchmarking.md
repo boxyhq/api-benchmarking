@@ -42,7 +42,7 @@ SELECT
 COUNT(DISTINCT ("JacksonIndex"."id")) AS "cnt"
 FROM
 "jackson_index" "JacksonIndex"
-LEFT JOIN "jackson_store" "JacksonIndex**store" ON "JacksonIndex**store"."key" = "JacksonIndex"."storeKey"
+LEFT JOIN "jackson_store" "JacksonIndex__store" ON "JacksonIndex__store"."key" = "JacksonIndex"."storeKey"
 WHERE
 (
 "JacksonIndex"."key" = 'saml:config:product:12e9799990914fc2f3a63d218c6d36b09b9c1c48'
