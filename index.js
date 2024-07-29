@@ -64,7 +64,7 @@ switch (type) {
 
 const sendRequests = async () => {
   try {
-    let count = 1;
+    let count = process.argv.length >= 7 ? parseInt(process.argv[6]) : 1;
     let reqFactory = require(`./requests/${reqInfo.file}`)[reqInfo.func];
     let startTime = +new Date(),
       endTime,

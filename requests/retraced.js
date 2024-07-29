@@ -225,10 +225,9 @@ const ingest = () => {
   return options;
 };
 
-const sameSize = () => {
+const sameSize = (count) => {
   const body = {
     action: "test.log.entry.to.make.sure.all.logs.are.of.same.size",
-    teamId: "boxyhq",
     group: {
       id: "boxyhq",
       name: "BoxyHQ",
@@ -241,11 +240,12 @@ const sameSize = () => {
       id: "1",
     },
     target: {
-      id: "21321-4654654-98798654-23132198",
+      id: count.toString(),
       name: "need to make sure that all logs are of same size",
       type: "text",
     },
     fields: {
+      count: count.toString(),
       webhookUrl: "http://vector:9000",
       field1: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
       field2:
