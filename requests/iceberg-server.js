@@ -29,44 +29,53 @@ const ingest = (id) => {
     // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
+  const body = [];
+  for (let i = 0; i < 500; i++) {
+    body.push(getEvent());
+  }
   var options = {
     method: "POST",
-    url: "http://localhost:9000",
+    url: "http://localhost:9090/ingest/bulk",
     headers: {
       "Content-Type": "application/json",
-      Cookie:
-        "myapp_cookiename=Fe26.2*1*d09d95c492eeb91aa5543f444037adc79846a6670d884eb2a2ba2d61e9dbb46a*ZM4MZsljSqwFwklP1f-pIA*FaSjWToOWODoCIwtozK1qw*1644996112887*ebf30b49c6e785ce61a966806bef398a72151fb476ce25c4ceec37c98c90ec07*XJBzLGoLaDDCzHrWZgzCizdZW4QSGyiTpzSJ3pqteKE~2",
     },
-    body: JSON.stringify({
-      tenentId: getRandomValue(tenentIds),
-      timestamp: randomDate(new Date(2022, 0, 1), new Date()),
-      actor: getRandomValue(actors),
-      actor_type: getRandomValue(actorTypes),
-      group: getRandomValue(groups),
-      where: getRandomValue(wheres),
-      where_type: getRandomValue(whereType),
-      date: new Date().toISOString().slice(0, 10),
-      when: new Date().toISOString(),
-      target: getRandomValue(targets),
-      target_id: getRandomValue(targetIds),
-      action: getRandomValue(actions),
-      action_type: getRandomValue(actionTypes),
-      name: getRandomValue(names),
-      description: getRandomValue(descriptions),
-      metadata: {
-        foo: "bar",
-        hey: "you",
-      },
-    }),
+    body: JSON.stringify(body),
   };
   return options;
 };
 
-function randomDate(start, end) {
-  var dt = +new Date(
-    start.getTime() + Math.random() * (end.getTime() - start.getTime())
-  );
-  return dt;
+function getEvent() {
+  return {
+    action: "some.recordWithHalfDate.created",
+    actor: {
+      fields: null,
+      id: "jackson@boxyhq.com",
+      name: "Jackson",
+      url: null,
+    },
+    canonical_time: +new Date(),
+    created: +new Date(),
+    crud: "c",
+    environment_id: "dev",
+    group: {
+      id: "boxyhq",
+      name: "BoxyHQ",
+    },
+    id: "c41c81030f2345eba19de9a2e1ec3b69",
+    project_id: "dev",
+    received: +new Date(),
+    source_ip: "127.0.0.1",
+    target: {
+      fields: null,
+      id: "100",
+      name: "tasks",
+      type: "Tasks",
+      url: null,
+    },
+    fields: {
+      id: "value",
+    },
+  };
 }
 
 module.exports = {
